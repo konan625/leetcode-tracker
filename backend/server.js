@@ -18,7 +18,10 @@ app.use(express.json()); // Parses incoming requests with JSON payloads. This mi
 //This defines a GET route for the root URl (/), when the user will visit a root url http://localhost:5000/ ther server responds with this msg, req -> reuest object containing info about http request, res-> response object to send response back to client
 
 //Import routes
+
+const authRoutes = require("./routes/authRoutes")
 const questionRoutes = require("./routes/questionRoutes");
+app.use("/api/auth",authRoutes);
 app.use("/api/questions",questionRoutes);
 
 app.get("/", (req, res) => {

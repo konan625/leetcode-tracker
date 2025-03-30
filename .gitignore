@@ -1,0 +1,12 @@
+node_modules/
+
+.env
+
+logs/
+
+#system files
+.DS_Store
+Thumbs.db
+
+#ignore dependencies
+yarn.lock
