@@ -19,10 +19,13 @@ app.use(express.json()); // Parses incoming requests with JSON payloads. This mi
 
 //Import routes
 
-const authRoutes = require("./routes/authRoutes")
-const questionRoutes = require("./routes/questionRoutes");
-app.use("/api/auth",authRoutes);
-app.use("/api/questions",questionRoutes);
+const authRoutes = require("../backend/routes/authRoutes")
+const questionRoutes = require("../backend/routes/questionRoutes");
+const userRoutes = require("../backend/routes/userRoutes")
+const cronJobs = require("../backend/services/cronJobs")
+app.use("/api/auth", authRoutes);
+app.use("/api/questions", questionRoutes);
+app.use("/api/user",userRoutes)
 
 app.get("/", (req, res) => {
     res.send("Leetcode Tracker API is running");

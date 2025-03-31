@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
-    solvedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }], //this stpores an array of solvedQuestions (linked to Question.js)
+    // solvedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }], //this stpores an array of solvedQuestions (linked to Question.js)
+    leetcodeUsername: {type: String, required: true, unique:true}
 
 });
 
