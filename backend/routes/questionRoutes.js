@@ -11,7 +11,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 //Adding a solved question (after authenticated)
 router.post("/add", async (req, res) => {
     try {
-        const { userID, title, difficulty, link } = req.body;
+        const { userId, title, difficulty, link } = req.body;
         const question = new Question({ userId, title, difficulty, link });
         await question.save();
 
@@ -24,7 +24,7 @@ router.post("/add", async (req, res) => {
 });
 
 // ✅ Get all solved questions for a user
-router.get("/:userID", async (req, res) => {
+router.get("/:userId", async (req, res) => {
     try {
         const quesions = await Question.find({ userID: req.params.userId }).sort({ dateSolved: -1 });
         res.status(200).json(questions);
