@@ -2,92 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>LeetCode Tracker</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
-      <h2>LeetCode Tracker</h2>
-      <div id="form-container">
-        <form id="auth-form">
-          <input type="text" name="name" placeholder="Name" required />
-          <input type="email" name="email" placeholder="Email" required />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-          />
-          <input
-            type="text"
-            name="leetcodeUsername"
-            placeholder="LeetCode Username"
-            required
-          />
-          <button type="submit">Sign Up</button>
-        </form>
-        <p>
-          Already have an account?
-          <a href="#" onclick="toggleForm()">Log in instead</a>
-        </p>
-      </div>
+      <h2>🎉 You're All Set!</h2>
+      <p>
+        You've successfully signed up for the <strong>LeetCode Tracker</strong>.
+      </p>
+      <p>
+        Your daily progress report will be delivered to your inbox at
+        <strong>11 PM IST</strong> every day.
+      </p>
+      <p><a href="/index.html">← Back to Login</a></p>
+      <button onclick="logout()">Logout</button>
     </div>
 
     <script>
-      const API_BASE =
-        "https://leetcode-tracker-production-a2a7.up.railway.app"; // ← replace with your actual Railway URL
-      const form = document.getElementById("auth-form");
-      let isSignup = true;
-
-      function toggleForm() {
-        isSignup = !isSignup;
-        form.innerHTML = isSignup
-          ? `
-        <input type="text" name="name" placeholder="Name" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <input type="text" name="leetcodeUsername" placeholder="LeetCode Username" required />
-        <button type="submit">Sign Up</button>
-        <p>Already have an account? <a href="#" onclick="toggleForm()">Log in</a></p>
-      `
-          : `
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-        <p>New user? <a href="#" onclick="toggleForm()">Sign up</a></p>
-      `;
+      // Optional: Redirect if user isn't logged in
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/index.html";
       }
 
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData);
-
-        // const url = isSignup
-        //   ? "http://localhost:5000/api/auth/signup" //change this during deployment
-        //   : "http://localhost:5000/api/auth/login"; //change this during deployment
-
-        const url = isSignup
-          ? `${API_BASE}/api/auth/signup`
-          : `${API_BASE}/api/auth/login`;
-
-        const res = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-
-        const result = await res.json();
-
-        if (result.token) {
-          localStorage.setItem("token", result.token);
-          window.location.href = "/dashboard.html";
-        } else {
-          alert(
-            result.message || "Error: " + (result.error || "Unknown error")
-          );
-        }
-      });
+      function logout() {
+        localStorage.removeItem("token");
+        window.location.href = "/index.html";
+      }
     </script>
   </body>
 </html>
