@@ -32,8 +32,9 @@ const leetcodeRoutes = require("./routes/leetcodeRoutes");
 // const cronJobs = require("../backend/services/cronJobs")
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api/user",userRoutes)
+app.use("/api/user", userRoutes)
 app.use("/api/leetcode", leetcodeRoutes);
+require("./services/cronJobs");
 
 app.get("/", (req, res) => {
     res.send("Leetcode Tracker API is running");
@@ -46,3 +47,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀Server is running on port ${PORT}`);
 });
+
+

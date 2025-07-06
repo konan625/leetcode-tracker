@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LeetCode Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>LeetCode Tracker</h2>
+      <div id="form-container">
+        <form id="auth-form">
+          <input type="text" name="name" placeholder="Name" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+          <input
+            type="text"
+            name="leetcodeUsername"
+            placeholder="LeetCode Username"
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+        <p>
+          Already have an account?
+          <a href="#" onclick="toggleForm()">Log in instead</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("auth-form");
+      let isSignup = true;
+
+      function toggleForm() {
+        isSignup = !isSignup;
+        form.innerHTML = isSignup
+          ? `
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <input type="text" name="leetcodeUsername" placeholder="LeetCode Username" required />
+        <button type="submit">Sign Up</button>
+        <p>Already have an account? <a href="#" onclick="toggleForm()">Log in</a></p>
+      `
+          : `
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <p>New user? <a href="#" onclick="toggleForm()">Sign up</a></p>
+      `;
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        const url = isSignup
+          ? "http://localhost:5000/api/auth/signup" //change this during deployment
+          : "http://localhost:5000/api/auth/login"; //change this during deployment
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await res.json();
+
+        if (result.token) {
+          localStorage.setItem("token", result.token);
+          window.location.href = "/dashboard.html";
+        } else {
+          alert(
+            result.message || "Error: " + (result.error || "Unknown error")
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
