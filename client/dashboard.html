@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h2>🎉 You're All Set!</h2>
-      <p>
-        You've successfully signed up for the <strong>LeetCode Tracker</strong>.
-      </p>
-      <p>
-        Your daily progress report will be delivered to your inbox at
-        <strong>11 PM IST</strong> every day.
-      </p>
-      <p><a href="/index.html">← Back to Login</a></p>
-      <button onclick="logout()">Logout</button>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>🎉 You're All Set!</h2>
+    <p>
+      You’ve successfully signed up for the <strong>LeetCode Tracker</strong>.
+      Every day at 11 PM, you’ll receive:
+    </p>
+    <ul>
+      <li>
+        <strong>Daily Stats</strong>: How many problems you solved that day.
+      </li>
+      <li>
+        <strong>Overall Stats</strong>: Your updated totals in Easy, Medium, and Hard.
+      </li>
+    </ul>
+    <p>
+      Sit back, solve problems, and watch your progress roll in! 🚀
+    </p>
+    <p><a href="/index.html">← Back to Login</a></p>
+  </div>
 
-    <script>
-      // Optional: Redirect if user isn't logged in
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "/index.html";
-      }
-
-      function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "/index.html";
-      }
-    </script>
-  </body>
+  <script>
+    // simple guard: redirect if not authenticated
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "/index.html";
+  </script>
+</body>
 </html>
