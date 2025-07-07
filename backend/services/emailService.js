@@ -2,6 +2,7 @@
 
 const nodemailer = require("nodemailer");
 const fetchLeetcodeStats = require("./fetchLeetcodeStats.prod");
+const fetchTodaySubmissions = require("./fetchSubmissionCalender")
 const User = require("../models/User");
 
 // Configure transporter once
@@ -20,6 +21,7 @@ async function sendDailyEmails() {
   const users = await User.find({});
   for (let user of users) {
     const stats = await fetchLeetcodeStats(user.leetcodeUsername);
+    const todayCount = await fetchSubmission(user.leetcodeUsername)
     if (!stats || stats.error) continue;
 
     // Calculate today's solved by subtracting last total
@@ -27,15 +29,23 @@ async function sendDailyEmails() {
     const todaySolved = stats.totalSolved - prevTotal;
 
     // Build email HTML
+    const todayDate = new Date().toLocaleDateString('en-GB',{
+      day:"2-digit",
+      month:"short",
+      year:"numeric"
+    });
     const html = `
-      <h2>Hello ${user.name},</h2>
-      <p>Your solved count for today: <strong>${todaySolved}</strong></p>
-      <ul>
-        <li>Easy: ${stats.easySolved - (user.leetcodeStats?.easy || 0)}</li>
-        <li>Medium: ${stats.mediumSolved - (user.leetcodeStats?.medium || 0)}</li>
-        <li>Hard: ${stats.hardSolved - (user.leetcodeStats?.hard || 0)}</li>
-      </ul>
-      <p>Keep up the streak! 🚀</p>
+        <h2>🧠 Your Daily LeetCode Report – ${todayDate}</h2>
+        <p><strong>✅ Problems Solved Today:</strong> ${todayCount}</p>
+        <p>Keep up the momentum! 💪</p>
+        <hr/>
+        <h3>📊 Your Updated Stats:</h3>
+        <ul>
+          <li>Total Solved: ${stats.totalSolved}</li>
+          <li>Easy: ${stats.easySolved}</li>
+          <li>Medium: ${stats.mediumSolved}</li>
+          <li>Hard: ${stats.hardSolved}</li>
+        </ul>
     `;
 
     // Send email
