@@ -21,7 +21,7 @@ async function sendDailyEmails() {
   const users = await User.find({});
   for (let user of users) {
     const stats = await fetchLeetcodeStats(user.leetcodeUsername);
-    const todayCount = await fetchSubmission(user.leetcodeUsername)
+    const todayCount = await fetchTodaySubmissions(user.leetcodeUsername)
     if (!stats || stats.error) continue;
 
     // Calculate today's solved by subtracting last total
