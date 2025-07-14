@@ -21,22 +21,42 @@ async function sendDailyEmails() {
   const users = await User.find({});
   for (let user of users) {
     const stats = await fetchLeetcodeStats(user.leetcodeUsername);
-    const todayCount = await fetchTodaySubmissions(user.leetcodeUsername)
-    if (!stats || stats.error) continue;
 
-    // Calculate today's solved by subtracting last total
-    const prevTotal = user.leetcodeStats?.totalSolved || 0;
-    const todaySolved = stats.totalSolved - prevTotal;
+    //Compute "questions solved today"
+    const todayDate = new Date().toISOString().split("T")[0]; //"YYYY-MM-DD"
+
+    //Find yesterday's snapshot 
+    const lastEntry = user.dailyStats[user.dailyStats.length - 1] || {};
+    const yesterdayTotal = lastEntry.totalSolved || 0;
+    const questionsToday = Math.max(0, stats.totalSolved - yesterdayTotal);
+
+    //Append today's snapshot
+    user.dailyStats.push({
+      date: todayDate,
+      totalSolved: stats.totalSolved,
+      easySolved: stats.easySolved,
+      mediumSolved: stats.mediumSolved,
+      hardSolved: stats.hardSolved,
+    });
+
+    await user.save();
+
+    // const todayCount = await fetchTodaySubmissions(user.leetcodeUsername)
+    // if (!stats || stats.error) continue;
+
+    // // Calculate today's solved by subtracting last total
+    // const prevTotal = user.leetcodeStats?.totalSolved || 0;
+    // const todaySolved = stats.totalSolved - prevTotal;
 
     // Build email HTML
-    const todayDate = new Date().toLocaleDateString('en-GB',{
-      day:"2-digit",
-      month:"short",
-      year:"numeric"
-    });
+    // const todayDate = new Date().toLocaleDateString('en-GB',{
+    //   day:"2-digit",
+    //   month:"short",
+    //   year:"numeric"
+    // });
     const html = `
         <h2>🧠 Your Daily LeetCode Report – ${todayDate}</h2>
-        <p><strong>✅ Problems Solved Today:</strong> ${todayCount}</p>
+        <p><strong>✅ Problems Solved Today:</strong> ${questionsToday}</p>
         <p>Keep up the momentum! 💪</p>
         <hr/>
         <h3>📊 Your Updated Stats:</h3>
@@ -57,15 +77,6 @@ async function sendDailyEmails() {
     });
     console.log(`✅ Email sent to ${user.email}`);
 
-    // Update DB stats
-    user.leetcodeStats = {
-      totalSolved: stats.totalSolved,
-      easy: stats.easySolved,
-      medium: stats.mediumSolved,
-      hard: stats.hardSolved
-    };
-    user.lastSyncedAt = new Date();
-    await user.save();
   }
 }
 

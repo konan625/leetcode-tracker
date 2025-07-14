@@ -1,12 +1,21 @@
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 
+const DailyStatSchema = new mongoose.Schema({
+    date: { type: String, required: true },           // e.g. "2025-07-07"
+    totalSolved: { type: Number, default: 0 },
+    easySolved: Number,
+    mediumSolved: Number,
+    hardSolved: Number
+});
+
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
     // solvedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }], //this stpores an array of solvedQuestions (linked to Question.js)
-    leetcodeUsername: {type: String, required: true, unique:true}
+    leetcodeUsername: { type: String, required: true, unique: true },
+    dailyStats: [DailyStatSchema]
 
 });
 
